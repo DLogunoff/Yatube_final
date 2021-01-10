@@ -3,7 +3,8 @@ env/
 venv/
 .venv
 .venv/
-
+.sent_emails/
+sent_emails/
 __pycache__/
 *.py[cod]
 
@@ -15,8 +16,14 @@ __pycache__/
 *.sublime-project
 *.sublime-workspace
 
+media/
 static/
 posts/static/
-media/
 
 db.sqlite3
+
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover 

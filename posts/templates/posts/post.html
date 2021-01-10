@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ author.username }}{% endblock %}
+{% block header %}Профиль {{ author.username }}{% endblock %}
+{% block content %}
+    <div class="row">
+        {% include "includes/profile_card.html" %}
+
+        <div class="col-md-9">
+
+            <!-- Пост -->
+               {% include "includes/post_item.html" with post=post %}
+            {% include 'includes/comments.html'  with comments=comments post=post form=form %}
+     </div>
+    </div>
+{% endblock %}
