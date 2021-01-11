@@ -74,7 +74,7 @@ def post_view(request, username, post_id):
         Post,
         id=post_id,
         author__username=username)
-    count=current_post.author.posts.count()
+    count = current_post.author.posts.count()
     following = request.user.is_authenticated and Follow.objects.filter(
         user=request.user, author__username=username).exists()
     form = CommentForm(request.POST or None)
@@ -118,8 +118,6 @@ def add_comment(request, post_id, username):
         id=post_id,
         author__username=username
     )
-    new_comment = None
-    comments = current_post.comments.all()
     form = CommentForm(request.POST or None)
     if form.is_valid():
         new_comment = form.save(commit=False)
@@ -131,12 +129,9 @@ def add_comment(request, post_id, username):
 
 @login_required
 def follow_index(request):
-    follow_list = []
-    follow_list_id = Follow.objects.filter(user=request.user).in_bulk()
-    for i in follow_list_id:
-        follow_list.append(follow_list_id[i].author)
-    post_list = Post.objects.filter(author__in=follow_list)
-    paginator = Paginator(post_list, PAGE_NUMBER)
+    current_user = request.user
+    content = Post.objects.filter(author__following__user=current_user)
+    paginator = Paginator(content, PAGE_NUMBER)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {
@@ -151,22 +146,18 @@ def profile_follow(request, username):
     following_to = get_object_or_404(user, username=username)
     if request.user == following_to:
         return profile(request, username)
-    if not request.user.is_authenticated:
-        return redirect('posts:profile', username=username)
-    is_followed = Follow.objects.filter(user=request.user, author=following_to)
-    if not is_followed.exists():
-        Follow(user=request.user, author=following_to).save()
+    is_followed, created = Follow.objects.get_or_create(
+        user=request.user,
+        author=following_to,
+    )
     return profile(request, username)
 
 
 @login_required
 def profile_unfollow(request, username):
     following_to = get_object_or_404(user, username=username)
-    if not request.user.is_authenticated:
-        return redirect('posts:profile', username=username)
     is_followed = Follow.objects.filter(user=request.user, author=following_to)
-    if is_followed.exists():
-        is_followed.delete()
+    is_followed.delete()
     return profile(request, username)
 
 

@@ -27,3 +27,8 @@ htmlcov/
 .coverage.*
 coverage.xml
 *.cover 
+
+about/admin.py
+about/apps.py
+about/models.py
+about/tests.py

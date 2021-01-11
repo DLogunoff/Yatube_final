@@ -303,5 +303,3 @@ class PostViewsTest(TestCase):
         self.assertEqual(post_text, test_post.text)
         post_author = response.context.get('post').author
         self.assertEqual(post_author, test_post.author)
-
-

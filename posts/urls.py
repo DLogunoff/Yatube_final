@@ -25,6 +25,4 @@ urlpatterns = [
         name='post_edit'
     ),
     path('group/<slug:slug>/', views.group_post, name='group'),
-
-
 ]
