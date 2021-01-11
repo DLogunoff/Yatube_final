@@ -90,7 +90,7 @@ class PostFormTests(TestCase):
 
     def test_add_comment(self):
         test_post = self.post
-        count=Comment.objects.count()
+        count = Comment.objects.count()
         form_data = {'text': 'комментарий'}
         response = self.authorized_client.post(reverse(
             'posts:add_comment',
@@ -102,4 +102,8 @@ class PostFormTests(TestCase):
             data=form_data,
             follow=True,
         )
-        self.assertEqual(Comment.objects.count(), count+1)
+        self.assertEqual(Comment.objects.count(), count + 1)
+        comment_text = response.context.get('comments')[0].text
+        self.assertEqual(comment_text, form_data['text'])
+        comment_author = response.context.get('comments')[0].author
+        self.assertEqual(comment_author, self.user)

@@ -283,7 +283,6 @@ class PostViewsTest(TestCase):
         self.assertEqual(post_number, Post.objects.count())
 
     def test_authorized_can_subscribe_unsubscribe(self):
-        post = PostViewsTest.post1
         count = Follow.objects.count()
         response = self.authorized_client.get(
             reverse('posts:profile_follow', kwargs={
@@ -294,6 +293,16 @@ class PostViewsTest(TestCase):
         test_follow = Follow.objects.filter(user=self.user, author=self.user1)
         test_follow.delete()
         self.assertEqual(Follow.objects.count(), count)
+
+    def test_authorized_can_unsubscribe(self):
+        test_follow = Follow.objects.create(user=self.user, author=self.user1)
+        count = Follow.objects.count()
+        response = self.authorized_client.get(
+            reverse('posts:profile_unfollow', kwargs={
+                'username': 'test1',
+            }
+                    ))
+        self.assertEqual(Follow.objects.count(), count - 1)
 
     def test_subcribe_feed(self):
         test_post = Post.objects.create(author=self.user1, text='aaaa')
